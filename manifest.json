@@ -1,0 +1,27 @@
+{
+  "name": "網管模擬器",
+  "short_name": "網管模擬",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#0d141c",
+  "theme_color": "#0d141c",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "id": "./",
+  "description": "Network & IT Engineer Simulator — 網管模擬器",
+  "lang": "zh-Hant"
+}
