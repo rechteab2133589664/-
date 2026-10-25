@@ -1,0 +1,27 @@
+{
+  "name": "Network & IT Engineer Simulator v0.3.1 — 網管模擬器",
+  "short_name": "網管模擬器",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#0d141c",
+  "theme_color": "#0d141c",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "id": "./",
+  "description": "v0.3.1：左右滑切換、CLI 工單便條、可切換立體辦公室、離線支援與背景音樂。",
+  "lang": "zh-Hant"
+}
