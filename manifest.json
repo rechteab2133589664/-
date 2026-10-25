@@ -1,0 +1,17 @@
+{
+  "name": "Network Architect：從零建置企業網路 v0.4",
+  "short_name": "網管模擬器",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#101b2a",
+  "theme_color": "#101d30",
+  "description": "從空辦公室建置 ISP、路由器、防火牆與交換器，再擴建到 300 人的大型企業。",
+  "lang": "zh-Hant",
+  "icons": [
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
