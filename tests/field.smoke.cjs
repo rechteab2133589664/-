@@ -13,7 +13,7 @@ try{
  const read=async()=>{await page.waitForTimeout(350);return page.evaluate(()=>JSON.parse(localStorage.getItem('hospital.field-engineer.v1')))};
  async function go(id){if(await page.locator('#inspector').isVisible())await page.locator('#close-inspector').click();await page.waitForTimeout(400);const s=await read(),rect=await page.locator('#world').boundingBox(),[x,y,w,d,h]=devices[id],zoom=parseInt(await page.locator('#zoom-value').innerText())/100;const sx=rect.x+rect.width/2+((x+w/2-y-d/2)-(s.player.x-s.player.y))*.82*zoom,sy=rect.y+rect.height/2+((x+w/2+y+d/2-s.player.x-s.player.y)*.41-h/2)*zoom;await page.mouse.click(sx,sy);await page.locator(`#inspector[data-device="${id}"]`).waitFor({state:'visible',timeout:15000});console.log('inspect',id);}
  async function port(id,name){await page.getByRole('button',{name:`${id} ${name} 網孔`,exact:true}).click();}
- async function command(value){await page.locator('#command-input').fill(value);await page.locator('#terminal-form button').click();}
+ async function command(value){await page.locator('#command-input').fill(value);await page.locator('#terminal-form button').click();if(value.startsWith('copy '))await page.locator('#terminal-form button').click();}
  // Keyboard movement must change position, and walls must stop movement.
  await page.locator('#world').focus();await page.keyboard.down('s');await page.waitForTimeout(300);await page.keyboard.up('s');await page.waitForTimeout(350);assert((await read()).player.x>790,'WASD movement');
  await go('UPS');await page.locator('#toggle-power').click();assert((await page.locator('#toggle-power').innerText()).includes('關閉'));

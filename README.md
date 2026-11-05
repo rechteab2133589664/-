@@ -1,4 +1,4 @@
-# 院線 FIELD ENGINEER · 0.2 施工教學版
+# 院線 FIELD ENGINEER · 0.3 醫院現場與 Catalyst CLI 版
 
 重新製作的電腦版醫院網管現場操作原型。以角色移動、現場設備、實體網孔與線路為核心；沒有沿用舊版經營介面或遊戲引擎。
 
@@ -54,7 +54,11 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory /workspace/-
 - 新遊戲需完成配線架 P1 到牆面 J1 的線槽規劃、穿線、兩端 T568B 線序練習及 1–8 基礎驗線。P2–P4、J2 是未接通的備用孔。
 - 舊版存檔保留已預埋鏈路；可按「埋線教學」重新練習，不會清除設備組態、IPv4 或現有跳線。
 - 線序練習顯示邏輯針腳 1–8，不是 IDC 端子的實物佈局。真實資訊模組需依廠商色碼打線；簡單線序／導通測試不能取代 Cat6 認證測試。
-- CLI 是教學用子集合，並非真正 Cisco IOS。IP、VLAN 與閘道驗收限定於本關目標。
+- CLI 為原創的 Catalyst 風格子集合，不含 Cisco 韌體；不宣稱 99% 相容。實作模式權限、縮寫、Tab、`?`、VLAN／SVI／Access／Trunk、介面範圍、介面啟停、描述、hostname、`do show`、running／startup-config、互動存檔及 reload。
+- 螢幕呈現訓練關卡用介面子集，並非實體機種所有埠數的複製。OSPF／BGP、ACL、完整 STP／DTP、AAA、SSH 等仍未實作；PortFast 只保存設定，不模擬 STP 狀態機。
+- 工作站閘道驗收仍以本關 IPv4 目標為準。SVI up/down 取決於 VLAN 與有效介面；shutdown、Trunk allowed VLAN 與相關 native VLAN 設定會影響連線。
+- 本地同 VLAN 工作站 Ping 閘道不依賴 ISP，也不要求先儲存設定；全工程任務另外要求完成全部配線與存檔。
+- `copy run start` 需按 Enter 確認檔名；`write memory` 可直接儲存。`reload` 會詢問是否保存變更，UPS 重新供電會從 startup-config 還原。瀏覽器重新整理則保留目前遊戲現場，不等同設備重開機。
 - 線長是場景距離估算；線槽施工目前為步驟模擬，沒有真實纜線物理、訊號衰減、完整封包或臨床應用模擬。
 - 尚未加入萬人經營、監控平台、自動化部署；這些需在現場互動核心上繼續開發。
 - 不連接任何真實設備，不處理真實病患資料。
@@ -66,6 +70,9 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory /workspace/-
 ```sh
 node tests/field.smoke.cjs
 node tests/tutorial.smoke.cjs
+node tests/cisco-cli.test.cjs
+node tests/cisco.browser.cjs
+node tests/scene.smoke.cjs
 ```
 
 測試用實際滑鼠與鍵盤操作施工教學、錯誤線槽／線序提示、穿線、兩端打線、基礎驗線、六段跳線、Console CLI 與工作站驗收，再拔線確認 Ping 失敗。另驗證走速與 Shift 快跑、舊存檔升級、未驗線不能 Ping，以及桌面版面。
@@ -75,3 +82,29 @@ node tests/tutorial.smoke.cjs
 ## 醫院場景
 
 增加護理師、護理櫃台、病床與病患、床欄與床輪、床邊生命徵象螢幕、點滴架、隔簾、候診座椅、醫院導引標示與扶手。這些是等角視角的程式繪圖；目前不模擬臨床醫療行為。
+
+### 0.3 醫院空間細化
+
+增加有門口的診間／資訊室隔間、掛號批價櫃台、診療床、洗手台、耗材櫃、輪椅、候診叫號螢幕、床頭氧氣／呼叫／電源面板、窗戶、日光照明、樓層導引牌，以及巡走護理／工作人員與候診病患。隔間和家具參與碰撞；背景人員不阻擋玩家施工路線。場景仍是程式繪製的等角視角，並非照片或全 3D。
+
+### CLI 入門範例
+
+```text
+SW-01> enable
+SW-01# configure terminal
+SW-01(config)# vlan 10
+SW-01(config-vlan)# name NURSE
+SW-01(config-vlan)# exit
+SW-01(config)# interface gi0/1
+SW-01(config-if)# switchport mode trunk
+SW-01(config-if)# switchport trunk allowed vlan 10,20
+SW-01(config-if)# end
+SW-01# show interfaces trunk
+SW-01# copy running-config startup-config
+Destination filename [startup-config]?
+[按 Enter]
+```
+
+輸入 `?` 查看目前模式可用指令，Tab 補全、Ctrl+Z 返回特權模式，↑／↓ 查歷史指令；可按「展開／收合終端機」放大。
+
+測試另確認新診間與資訊室可經門口進入、核心設定完成後教學能轉往接入交換器，以及展開 Console 時命令列仍在可視範圍。
