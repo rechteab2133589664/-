@@ -1,5 +1,5 @@
 const {chromium}=require('playwright');const assert=require('node:assert/strict');
-const url=process.env.GAME_URL||'http://127.0.0.1:8000/';const key='hospital.field-engineer.v1';
+const url=process.env.GAME_URL||'http://127.0.0.1:8000/hospital.html';const key='hospital.field-engineer.v1';
 const defs={'SW-01':[350,390,115,65,118],'PC-01':[1130,365,100,70,72]};
 const links=[['ISP','GE0','RTR-01','WAN'],['RTR-01','LAN','FW-01','WAN'],['FW-01','LAN','CORE-01','Gi0/1'],['CORE-01','Gi0/2','SW-01','Gi0/1'],['SW-01','Fa0/1','PATCH-01','P1'],['WALL-01','J1','PC-01','eth0']];
 function seed(){return{version:1,player:{x:407,y:505},visited:true,ups:true,pcPower:true,cables:links.map(([a,ap,b,bp])=>({a:{device:a,port:ap},b:{device:b,port:bp},length:90})),config:{'CORE-01':{vlan10:true,routing:true,svi:'10.10.10.1',saved:true},'SW-01':{vlan10:true,trunk:true,accessMode:true,accessVlan:10,saved:true}},pc:{ip:'10.10.10.21',mask:'255.255.255.0',gateway:'10.10.10.1'},logs:{},pingPassed:false,completionShown:true,guide:false,permanent:{route:true,pulled:true,pulling:false,patch:true,wall:true,tested:true}};}

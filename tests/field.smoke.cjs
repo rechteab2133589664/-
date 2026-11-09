@@ -1,7 +1,7 @@
 // Requires a local HTTP server and the environment's existing Playwright + Chromium.
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
-const URL=process.env.GAME_URL||'http://127.0.0.1:8000/';
+const URL=process.env.GAME_URL||'http://127.0.0.1:8000/hospital.html';
 const devices={ISP:[130,150,80,55,66],UPS:[275,150,65,60,78],'RTR-01':[420,150,85,58,92],'FW-01':[565,150,85,58,92],'CORE-01':[150,390,100,65,118],'SW-01':[350,390,115,65,118],'PATCH-01':[560,390,95,50,100],'WALL-01':[1000,170,65,26,60],'PC-01':[1130,365,100,70,72]};
 const core=['enable','configure terminal','vlan 10','exit','ip routing','interface vlan 10','ip address 10.10.10.1 255.255.255.0','no shutdown','end','copy running-config startup-config'];
 const access=['enable','configure terminal','vlan 10','exit','interface gi0/1','switchport mode trunk','exit','interface fa0/1','switchport mode access','switchport access vlan 10','end','copy running-config startup-config'];

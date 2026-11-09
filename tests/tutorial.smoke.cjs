@@ -1,6 +1,6 @@
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
-const URL=process.env.GAME_URL||'http://127.0.0.1:8000/';
+const URL=process.env.GAME_URL||'http://127.0.0.1:8000/hospital.html';
 const key='hospital.field-engineer.v1';
 const base=()=>({version:1,player:{x:810,y:820},visited:true,ups:true,pcPower:true,cables:[],config:{},pc:{ip:'10.10.10.21',mask:'255.255.255.0',gateway:'10.10.10.1'},logs:{},pingPassed:false,completionShown:true});
 (async()=>{const b=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});try{
