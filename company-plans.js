@@ -21,7 +21,7 @@ function getPlan(id){return plans.find(p=>p.id===id)||null;}
 function steps(planId){const p=getPlan(planId);if(!p)throw new RangeError('找不到架構，請先選擇公司網路方案。');const hierarchy=p.id==='three-tier'?'邊界 → 核心 → 彙聚 → 接入 → 電腦':p.id==='collapsed'?'邊界 → 折疊核心 → 接入 → 電腦':'ISP → 邊界閘道 → 單台接入交換器 → 電腦';return [
  {id:'purchase',title:'01 · 使用管理電腦網購設備',why:'先把設備角色、埠數和預算對起來，才能知道設備夠不夠用。',instruction:'點選已有行動網路的管理電腦，開啟採購網站、確認清單與機櫃數量，再送出訂單。',action:'purchase'},
  {id:'site',title:'02 · 自選機房位置',why:'機房需考慮用電、空調、管線與擴充空間。',instruction:'比較推薦與其他候選地點，選擇位置並確認機櫃數量及建設費。',action:'site'},
- {id:'rack',title:'03 · 選機櫃與 U 位上架',why:'設備需佔用連續 U 位，庫存設備只能安裝一次。',instruction:'點選機櫃，選空白 U 位，在庫存選設備後確認上架。',action:'rack'},
+ {id:'rack',title:'03 · 選機櫃與 U 位上架',why:'設備需佔用連續 U 位，庫存設備只能安裝一次。',instruction:'先點機房地板、自選位置建立機櫃，再點機櫃的空白 U 位，從庫存選設備確認上架。',action:'rack'},
  {id:'power',title:'02 · 上架與供電',why:'設備放進機房不等於可以使用；配電和穩定供電是所有檢查的起點。',instruction:'完成機櫃上架，開啟 UPS／PDU，再確認各台設備供電狀態。',action:'power'},
  {id:'wan',title:'03 · 接好外網與安全邊界',why:'內網與外網的角色不同；先辨識 WAN、LAN 與安全閘道，避免接錯區域。',instruction:'依配線提示接好 ISP／邊界路由器與防火牆。外網故障不代表同 VLAN 內的閘道也應無法到達。',action:'cable'},
  {id:'cable',title:'04 · 按層級完成實體配線',why:'有一致的接線方式，後續才能定位哪一層、哪一段線出問題。',instruction:'照圖逐段連接：'+hierarchy+'。選設備上聯埠，不要把員工接入埠誤當上聯，也不要多接一條線形成迴路。',action:'cable'},
