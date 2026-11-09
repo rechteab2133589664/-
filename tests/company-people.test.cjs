@@ -1,0 +1,4 @@
+const assert=require('node:assert/strict'),P=require('../company-people.js');
+assert.equal(new Set(Array.from({length:12},(_,i)=>P.profile(i).name)).size,12);
+for(let i=0;i<12;i++){let distance=0,old=P.position(i,0);for(let t=1;t<=500;t++){const p=P.position(i,t);assert(p.x>=640&&p.x<=1290&&p.y>=195&&p.y<=760,'staff remain in public office corridors');for(let j=0;j<12;j++){const x=740+(j%3)*170,y=125+Math.floor(j/3)*145;assert(!(p.x>x-8&&p.x<x+118&&p.y>y-8&&p.y<y+68),'staff must not walk through a desk');}distance+=Math.hypot(p.x-old.x,p.y-old.y);old=p;}assert(distance>1000,'staff actually walk rather than wiggle in place');const p=P.position(i,100,true),q=P.position(i,200,true);assert.deepEqual(p,q,'misplug user stays at their workstation');}
+console.log('PASS 12 named chibi staff walk office corridors without entering server room or desks; misplug staff remain at their own desk');

@@ -38,7 +38,7 @@ function legacySave(){
   const project=(x,y,z)=>({x:r.x+r.width/2+((x-y)-(s.ui.camera.x-s.ui.camera.y))*.8*s.ui.zoom,y:r.y+r.height/2+((x+y-s.ui.camera.x-s.ui.camera.y)*.4-z)*s.ui.zoom});
   const switchPoint=project(150,340,50);await p.mouse.click(switchPoint.x,switchPoint.y);assert(await p.locator('#asset-panel').innerText().then(t=>t.toLowerCase().includes('access-1')));
   await p.locator('#asset-console').click();assert(await p.locator('#cli-input').isVisible());await p.locator('#cli-done').click();await p.locator('#close-asset').click();
-  await p.locator('[data-view="assets"]').click();await p.locator('[data-open-asset="pc-12"]').click();assert(await p.locator('[data-related-asset="pc-12"]').count());
+  await p.locator('[data-view="assets"]').click();await p.locator('#asset-search').fill('pc-12');await p.locator('[data-open-asset="pc-12"]').click();assert(await p.locator('[data-related-asset="pc-12"]').count());
   await p.locator('[data-related-asset="cable-12"]').click();assert((await p.locator('#asset-panel').innerText()).toLowerCase().includes('cable-12'));
   await p.locator('[data-related-asset="jack-12"]').click();assert((await p.locator('#asset-panel').innerText()).toLowerCase().includes('jack-12'));
   await p.keyboard.press('Escape');assert(await p.locator('#asset-panel').isHidden(),'Escape closes a component panel while its button has focus');await p.locator('#center-camera').click();await p.waitForTimeout(450);const saved=await stored();
