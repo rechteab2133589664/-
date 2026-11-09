@@ -1,10 +1,28 @@
-# NET / OPS · v0.10 擴大機房、電腦採購與庫存上架
+# NET / OPS · v0.11 CLI 子模式切換與年度設備壽命
 
 電腦版網管教學遊戲，恢復 3D 斜角上帝視角。保留滾輪與＋／－縮放，整層可用場地已擴大到原本約三倍。機房依照片參考改為黑色網孔櫃體、A／B 成排機櫃、架空地板、送風柵與橘黃上方線槽。主要操作固定在桌面視窗內，保留 Q 版員工、紅綠狀態燈與原本的 Cisco 風格 CLI。
 
 [下載最新版 ZIP](https://github.com/rechteab2133589664/-/archive/refs/heads/main.zip)。完整解壓縮到新資料夾，以電腦 Chrome 或 Edge 開啟 `index.html`。不需安裝套件、登入或連網；採購網站與訂單為遊戲內模擬。建議 1366×768 以上。
 
 開發預覽：在遊戲資料夾執行 `python3 -m http.server 8000`，開啟 <http://127.0.0.1:8000/>。
+
+## 本版修正
+
+VLAN 模式可以直接輸入 `int gi1/0/1` 進入介面設定，不必先 `exit`。介面／範圍／VLAN 之間的選擇指令也支援直接切換，並維持 Tab、`?` 與錯誤輸入的模式保護。
+
+設備改用以下預期使用年限，每個遊戲年為 365 日；時間倍率只加快日曆，不會把年限縮成幾十天。
+
+| 設備 | 預期年限 |
+| --- | --- |
+| 電腦 | 6 年 |
+| 網路線 | 15 年 |
+| 網孔／資訊插座 | 20 年 |
+| 接入交換器 | 10 年 |
+| 核心／彙聚交換器 | 12 年 |
+
+健康度依實際使用時間緩慢下降。自然磨耗按月檢查，半個使用年限之後才逐漸增加機率；到期後仍需診斷、更換並驗收。手動故障練習會明確注入情境，其中「模擬 6 年電腦到期」只改變指定 PC 的設備年齡。
+
+資產表、設備面板與巡檢證據都以年限顯示；時鐘顯示年／日，提供「快轉 1 年」及「1 日／秒」倍率。舊存檔保留已用時間、組態、預算與機櫃位置，改套新年限；撤銷原短期模型造成的過早到期告警，保留其他故障及刻意啟動的老化練習。這些是遊戲的汰換／老化模型，不代表製造商保固或每台硬體的實際可用年限。
 
 ## 新建置流程
 
@@ -38,6 +56,7 @@
 ```sh
 node tests/company-plans.test.cjs
 node tests/company-sim.test.cjs
+node tests/company-lifecycle.test.cjs
 node tests/company-people.test.cjs
 node tests/company-facility.test.cjs
 node tests/company-rack.test.cjs
@@ -47,6 +66,7 @@ node tests/company.browser.cjs
 node tests/company-god-view.browser.cjs
 node tests/company-desktop.browser.cjs
 node tests/company-build.browser.cjs
+node tests/company-cli-lifecycle.browser.cjs
 ```
 
 涵蓋採購與建設扣款／容量驗證、多機櫃任意 U 位庫存上架、邊界與重疊檢查、舊存檔遷移、三種架構完整施工、CLI、維修、縮放與鏡頭操作及三種桌面解析度。
