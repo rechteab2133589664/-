@@ -28,22 +28,19 @@ function legacySave(){
   await p.locator('#center-camera').click();await p.waitForTimeout(450);
   const before=(await stored()).ui.camera;
   await p.locator('#office').focus();await p.keyboard.down('ArrowRight');await p.waitForTimeout(220);await p.keyboard.up('ArrowRight');await p.waitForTimeout(450);
-  const after=(await stored()).ui.camera;assert(after.x>before.x);assert.equal(after.y,before.y);
+  const after=(await stored()).ui.camera;assert(after.x>before.x);assert(after.y<before.y);
   const canvas=p.locator('#office');await canvas.scrollIntoViewIfNeeded();let r=await canvas.boundingBox();
   await p.mouse.move(r.x+r.width*.5,r.y+r.height*.8);await p.mouse.down();await p.mouse.move(r.x+r.width*.5+100,r.y+r.height*.8+30,{steps:8});await p.mouse.up();await p.waitForTimeout(450);
   const dragged=(await stored()).ui.camera;assert(Math.hypot(dragged.x-after.x,dragged.y-after.y)>30);assert(await p.locator('#asset-panel').isHidden(),'dragging does not select a device');
-  const oldZoom=(await stored()).ui.zoom;await p.mouse.wheel(0,-180);await p.waitForTimeout(450);assert((await stored()).ui.zoom>oldZoom);
+  const previousZoom=(await stored()).ui.zoom;await p.mouse.wheel(0,-180);await p.waitForTimeout(450);assert((await stored()).ui.zoom>previousZoom);
   await p.locator('#center-camera').click();await p.waitForTimeout(450);s=await stored();r=await canvas.boundingBox();
-  // Click the visible access-switch rack directly on the map, rather than an asset-table shortcut.
-  const project=(x,y)=>({x:r.x+r.width/2+(x-s.ui.camera.x)*s.ui.zoom,y:r.y+r.height/2+(y-s.ui.camera.y)*s.ui.zoom});
-  const switchPoint=project(265,199.5);await p.mouse.click(switchPoint.x,switchPoint.y);assert(await p.locator('#asset-panel').innerText().then(t=>t.toLowerCase().includes('access-1')));
-  await p.locator('#asset-console').click();assert(await p.locator('#cli-input').isVisible());await p.locator('#cli-done').click();await p.locator('#close-asset').click();
+  await p.locator('#rack-open').click();await p.locator('[data-enter-rack="RACK-A"]').click();await p.locator('[data-rack-equipment="access-1"]').click();await p.locator('#rack-manage-asset').click();await p.locator('#asset-console').click();assert(await p.locator('#cli-input').isVisible());await p.locator('#cli-done').click();await p.locator('#close-asset').click();
   await p.locator('[data-view="assets"]').click();await p.locator('#asset-search').fill('pc-12');await p.locator('[data-open-asset="pc-12"]').click();assert(await p.locator('[data-related-asset="pc-12"]').count());
   await p.locator('[data-related-asset="cable-12"]').click();assert((await p.locator('#asset-panel').innerText()).toLowerCase().includes('cable-12'));
   await p.locator('[data-related-asset="jack-12"]').click();assert((await p.locator('#asset-panel').innerText()).toLowerCase().includes('jack-12'));
   await p.keyboard.press('Escape');assert(await p.locator('#asset-panel').isHidden(),'Escape closes a component panel while its button has focus');await p.locator('#center-camera').click();await p.waitForTimeout(450);const saved=await stored();
   await p.locator('#viewport').screenshot({path:'/workspace/scratch/company/god-view.png'});
-  await p.reload();await p.waitForTimeout(450);s=await stored();assert.deepEqual(s.ui.camera,saved.ui.camera);assert.equal(s.ui.zoom,saved.ui.zoom);assert(s.incidents[0].resolved);assert.equal(s.budget,seed.budget);assert(!('player' in s.ui));assert.deepEqual(errors,[]);
-  console.log('PASS god-view migration preserves company, instant remote diagnostics, direct map selection, CLI access, workstation components, camera keys/drag/zoom/overview and persisted camera');
+  await p.reload();await p.waitForTimeout(450);s=await stored();assert.deepEqual(s.ui.camera,saved.ui.camera);assert.equal(s.ui.zoom,saved.ui.zoom);assert.equal(s.ui.rack.version,2);assert(s.ui.facility.built);assert(s.incidents[0].resolved);assert.equal(s.budget,seed.budget);assert(!('player' in s.ui));assert.deepEqual(errors,[]);
+  console.log('PASS god-view migration preserves company, instant remote diagnostics, cabinet selection, CLI access, workstation components, camera keys/drag/zoom and persisted camera');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

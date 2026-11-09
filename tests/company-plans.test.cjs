@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict'),P=require('../company-plans.js'),S=require('../company-sim.js');
 for(const [n,id] of [[0,'small'],[24,'small'],[25,'collapsed'],[200,'collapsed'],[201,'three-tier'],[10000,'three-tier']])assert.equal(P.recommend(n).id,id);
-for(const n of [1,12,80,500,3000,10000]){const c=P.capacity(n);assert.equal(c.endpointDemand,n);assert.equal(c.sparePorts,Math.ceil(n*.2));assert(c.installedPorts>=n+c.sparePorts);assert((c.accessSwitches-1)*48<c.requiredPorts);assert.equal(P.steps(P.recommend(n).id).length,10);}
+for(const n of [1,12,80,500,3000,10000]){const c=P.capacity(n);assert.equal(c.endpointDemand,n);assert.equal(c.sparePorts,Math.ceil(n*.2));assert(c.installedPorts>=n+c.sparePorts);assert((c.accessSwitches-1)*48<c.requiredPorts);assert.equal(P.steps(P.recommend(n).id).length,12);}
 for(const n of [-1,1.5,10001,NaN])assert.throws(()=>P.recommend(n));
 const s=S.create({employees:10000});const p=P.recommend(10000),c=s.capacity;assert.equal(s.purchaseCost,p.equipment.reduce((sum,e)=>sum+e.price*(e.role==='access'?c.accessSwitches:e.role==='endpoint'?10000:e.role==='distribution'?c.distributionPairs:1),0)+10000*450);S.purchase(s);S.power(s);S.cable(s);S.configure(s);S.saveConfig(s);S.test(s);S.start(s);S.inject(s,'switch','dist-1');assert.equal(S.status(s).affected,960);S.inject(s,'switch','core-1');assert.equal(S.status(s).affected,10000);
 console.log('PASS architecture boundaries, spare capacity, scaled procurement and regional fault containment');

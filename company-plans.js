@@ -19,7 +19,9 @@ function recommend(employeeCount){const n=count(employeeCount);return plans.find
 function capacity(employeeCount){const employees=count(employeeCount),endpointDemand=employees,sparePorts=Math.ceil(endpointDemand*.2),requiredPorts=endpointDemand+sparePorts,portsPerSwitch=48,accessSwitches=Math.ceil(requiredPorts/portsPerSwitch),installedPorts=accessSwitches*portsPerSwitch,distributionPairs=employees>200?Math.ceil(accessSwitches/20):0;return {employees,employeeCount:employees,endpoints:endpointDemand,endpointDemand,sparePorts,requiredPorts,portsPerSwitch,accessSwitches,installedPorts,unusedPorts:installedPorts-endpointDemand,endpointUtilization:installedPorts?endpointDemand/installedPorts:0,designUtilization:installedPorts?requiredPorts/installedPorts:0,distributionPairs,distributionSwitches:distributionPairs*2,assumption:'每位員工一個有線端點，另預留 20% 埠。48 個資料埠與獨立上聯埠分開計算；尚未包含 AP、電話、印表機和 IoT。',distributionAssumption:'三層教學以每 20 台接入設備示範一組雙彙聚；實務仍須依上聯埠、頻寬、樓棟及備援重新計算。'};}
 function getPlan(id){return plans.find(p=>p.id===id)||null;}
 function steps(planId){const p=getPlan(planId);if(!p)throw new RangeError('找不到架構，請先選擇公司網路方案。');const hierarchy=p.id==='three-tier'?'邊界 → 核心 → 彙聚 → 接入 → 電腦':p.id==='collapsed'?'邊界 → 折疊核心 → 接入 → 電腦':'ISP → 邊界閘道 → 單台接入交換器 → 電腦';return [
- {id:'purchase',title:'01 · 依架構採購設備',why:'先把設備角色、埠數和預算對起來，才能知道設備夠不夠用。',instruction:'依採購清單準備機櫃、UPS、Cisco 路由器與交換器，以及第一台工作站。接入交換器數量依員工數和 20% 預留容量計算。',action:'purchase'},
+ {id:'purchase',title:'01 · 使用管理電腦網購設備',why:'先把設備角色、埠數和預算對起來，才能知道設備夠不夠用。',instruction:'點選已有行動網路的管理電腦，開啟採購網站、確認清單與機櫃數量，再送出訂單。',action:'purchase'},
+ {id:'site',title:'02 · 自選機房位置',why:'機房需考慮用電、空調、管線與擴充空間。',instruction:'比較推薦與其他候選地點，選擇位置並確認機櫃數量及建設費。',action:'site'},
+ {id:'rack',title:'03 · 選機櫃與 U 位上架',why:'設備需佔用連續 U 位，庫存設備只能安裝一次。',instruction:'點選機櫃，選空白 U 位，在庫存選設備後確認上架。',action:'rack'},
  {id:'power',title:'02 · 上架與供電',why:'設備放進機房不等於可以使用；配電和穩定供電是所有檢查的起點。',instruction:'完成機櫃上架，開啟 UPS／PDU，再確認各台設備供電狀態。',action:'power'},
  {id:'wan',title:'03 · 接好外網與安全邊界',why:'內網與外網的角色不同；先辨識 WAN、LAN 與安全閘道，避免接錯區域。',instruction:'依配線提示接好 ISP／邊界路由器與防火牆。外網故障不代表同 VLAN 內的閘道也應無法到達。',action:'cable'},
  {id:'cable',title:'04 · 按層級完成實體配線',why:'有一致的接線方式，後續才能定位哪一層、哪一段線出問題。',instruction:'照圖逐段連接：'+hierarchy+'。選設備上聯埠，不要把員工接入埠誤當上聯，也不要多接一條線形成迴路。',action:'cable'},
@@ -29,6 +31,6 @@ function steps(planId){const p=getPlan(planId);if(!p)throw new RangeError('找�
  {id:'save',title:'08 · 保存組態與備份',why:'running-config 與 startup-config 不同；未儲存的設定可能在設備重開機後消失。',instruction:'檢視 show running-config。執行 copy running-config startup-config，按 Enter 確認；另外保留施工紀錄與組態備份。',action:'configure'},
  {id:'test',title:'09 · 驗收連線與容量',why:'驗收應證明端點真的能到閘道，不是只看到綠燈或按完採購。',instruction:'檢查交換器介面、VLAN、Trunk 與 IPv4。在工作站 Ping 本地閘道，確認結果與端點數、可用埠一致。未通過就依供電 → 線材 → 埠 → VLAN → IP 順序排查。',action:'test'},
  {id:'operate',title:'10 · 開始營運與維護',why:'網路建好後仍會出事：使用者可能亂接線，線材、網孔與電腦也會逐漸老化或發生間歇故障。',instruction:'進入辦公區營運，查看告警和報修紀錄。先蒐證、找出根因，再換線、換孔、修正組態或更換工作站，最後重新驗證。',action:'operate'}
- ];}
+ ].map((s,i)=>({...s,title:String(i+1).padStart(2,'0')+s.title.slice(2)}));}
 return {plans,recommend,capacity,getPlan,steps};
 });
