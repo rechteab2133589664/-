@@ -28,15 +28,15 @@ function legacySave(){
   await p.locator('#center-camera').click();await p.waitForTimeout(450);
   const before=(await stored()).ui.camera;
   await p.locator('#office').focus();await p.keyboard.down('ArrowRight');await p.waitForTimeout(220);await p.keyboard.up('ArrowRight');await p.waitForTimeout(450);
-  const after=(await stored()).ui.camera;assert(after.x>before.x);assert(after.y<before.y);
+  const after=(await stored()).ui.camera;assert(after.x>before.x);assert.equal(after.y,before.y);
   const canvas=p.locator('#office');await canvas.scrollIntoViewIfNeeded();let r=await canvas.boundingBox();
   await p.mouse.move(r.x+r.width*.5,r.y+r.height*.8);await p.mouse.down();await p.mouse.move(r.x+r.width*.5+100,r.y+r.height*.8+30,{steps:8});await p.mouse.up();await p.waitForTimeout(450);
   const dragged=(await stored()).ui.camera;assert(Math.hypot(dragged.x-after.x,dragged.y-after.y)>30);assert(await p.locator('#asset-panel').isHidden(),'dragging does not select a device');
   const oldZoom=(await stored()).ui.zoom;await p.mouse.wheel(0,-180);await p.waitForTimeout(450);assert((await stored()).ui.zoom>oldZoom);
   await p.locator('#center-camera').click();await p.waitForTimeout(450);s=await stored();r=await canvas.boundingBox();
   // Click the visible access-switch rack directly on the map, rather than an asset-table shortcut.
-  const project=(x,y,z)=>({x:r.x+r.width/2+((x-y)-(s.ui.camera.x-s.ui.camera.y))*.8*s.ui.zoom,y:r.y+r.height/2+((x+y-s.ui.camera.x-s.ui.camera.y)*.4-z)*s.ui.zoom});
-  const switchPoint=project(150,340,50);await p.mouse.click(switchPoint.x,switchPoint.y);assert(await p.locator('#asset-panel').innerText().then(t=>t.toLowerCase().includes('access-1')));
+  const project=(x,y)=>({x:r.x+r.width/2+(x-s.ui.camera.x)*s.ui.zoom,y:r.y+r.height/2+(y-s.ui.camera.y)*s.ui.zoom});
+  const switchPoint=project(265,199.5);await p.mouse.click(switchPoint.x,switchPoint.y);assert(await p.locator('#asset-panel').innerText().then(t=>t.toLowerCase().includes('access-1')));
   await p.locator('#asset-console').click();assert(await p.locator('#cli-input').isVisible());await p.locator('#cli-done').click();await p.locator('#close-asset').click();
   await p.locator('[data-view="assets"]').click();await p.locator('#asset-search').fill('pc-12');await p.locator('[data-open-asset="pc-12"]').click();assert(await p.locator('[data-related-asset="pc-12"]').count());
   await p.locator('[data-related-asset="cable-12"]').click();assert((await p.locator('#asset-panel').innerText()).toLowerCase().includes('cable-12'));
