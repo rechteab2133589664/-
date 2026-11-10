@@ -1,0 +1,7 @@
+(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.CompanyScenes=api;})(globalThis,function(){'use strict';
+const pages=[{id:'areas',title:'區域選擇',path:'#/areas',description:'選擇要查看的獨立場景。'},{id:'room',title:'機房',path:'#/room',description:'查看機櫃、在地板擺位，並進入 42U 機櫃管理設備。'},{id:'office',title:'辦公室',path:'#/office',description:'查看員工與工作站，處理接錯線或電腦報修。'},{id:'it-office',title:'IT 辦公室',path:'#/it-office',description:'機房外的 IT 工作區；招募同仁、指派巡檢與維修任務。'}];
+function route(hash){return pages.find(p=>p.path===hash)?.id||null;}
+function assetScene(a){return a.type==='switch'?'room':'office';}
+function bounds(id,state,sites){if(id==='office')return{x:1190,y:32,w:1178,d:1248,h:120};if(id==='it-office')return{x:30,y:30,w:1020,d:680,h:110};const f=state.ui?.facility,site=f?.built&&sites.find(s=>s.id===f.siteId);return site?{x:site.x-12,y:site.y-12,w:site.w+24,d:site.d+24,h:245}:{x:40,y:60,w:1090,d:1190,h:90};}
+function fit(b,width,height){const pts=[];for(const x of[b.x,b.x+b.w])for(const y of[b.y,b.y+b.d])for(const z of[0,b.h])pts.push({x:(x-y)*.8,y:(x+y)*.4-z});const loX=Math.min(...pts.map(p=>p.x)),hiX=Math.max(...pts.map(p=>p.x)),loY=Math.min(...pts.map(p=>p.y)),hiY=Math.max(...pts.map(p=>p.y)),cx=(loX+hiX)/2,cy=(loY+hiY)/2;return{camera:{x:(cx/.8+cy/.4)/2,y:(cy/.4-cx/.8)/2},zoom:Math.max(.16,Math.min(1.2,(width-70)/(hiX-loX),(height-50)/(hiY-loY)))};}
+return{pages,route,assetScene,bounds,fit};});
